@@ -86,7 +86,7 @@ namespace DataURL {
         mediaType = MediaType.fromString("text/plain;charset=US-ASCII");
       }
 
-      return new Resource(bytes, mediaType.toString());
+      return new Resource(bytes.buffer, mediaType.toString());
     }
 
     static fromString(dataUrlStr: string): Resource {
@@ -108,6 +108,10 @@ namespace DataURL {
         return Resource.fromString(dataUrl);
       }
       throw new TypeError("dataUrl");
+    }
+
+    static fromUint8Array(uint8Array: Uint8Array, type: string): Resource {
+      return new Resource(uint8Array.buffer, type);
     }
 
     static async fromBlob(blob: Blob): Promise<Resource> {

@@ -148,6 +148,20 @@ Deno.test("DataURL.Resource.from(string | URL)", () => {
   assertStrictEquals(r7u.type, "text/plain;p1=a;p2=b");
 });
 
+Deno.test("DataURL.Resource.fromUint8Array(Uint8Array, string)", () => {
+  const r1 = DataURL.Resource.fromUint8Array(
+    Uint8Array.of(65, 0, 1, 127),
+    "text/plain",
+  );
+  assertStrictEquals(r1.data.byteLength, 4);
+  const r1b = new Uint8Array(r1.data);
+  assertStrictEquals(r1b.at(0), 65);
+  assertStrictEquals(r1b.at(1), 0);
+  assertStrictEquals(r1b.at(2), 1);
+  assertStrictEquals(r1b.at(3), 127);
+  assertStrictEquals(r1.type, "text/plain");
+});
+
 Deno.test("DataURL.Resource.fromBlob(Blob)", async () => {
   const b1 = new Blob([Uint8Array.of(65, 0, 1, 127)], { type: "text/plain" });
   const r1 = await DataURL.Resource.fromBlob(b1);
