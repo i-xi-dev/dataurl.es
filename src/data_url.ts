@@ -110,6 +110,7 @@ namespace DataURL {
       throw new TypeError("dataUrl");
     }
 
+    //TODO 第2引数をBlobPropertyBag
     static fromUint8Array(uint8Array: Uint8Array, type: string): Resource {
       return new Resource(uint8Array.buffer, type);
     }
