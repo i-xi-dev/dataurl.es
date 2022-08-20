@@ -3,6 +3,7 @@ import { HttpUtils } from "https://raw.githubusercontent.com/i-xi-dev/http-utils
 import { Isomorphic } from "https://raw.githubusercontent.com/i-xi-dev/isomorphic.es/2.0.1/mod.ts";
 import { Percent } from "https://raw.githubusercontent.com/i-xi-dev/percent.es/4.0.12/mod.ts";
 import { Base64 } from "https://raw.githubusercontent.com/i-xi-dev/base64.es/3.0.6/mod.ts";
+import { MediaType } from "https://raw.githubusercontent.com/i-xi-dev/mimetype.es/1.2.0/mod.ts";
 
 const {
   ASCII_WHITESPACE,
@@ -71,7 +72,21 @@ namespace DataURL {
         mediaTypeStr = mediaTypeStr.replace(base64Indicator, "");
       }
 
-      return new Resource(bytes, mediaTypeStr);
+      // 12
+      if (mediaTypeStr.startsWith(";")) {
+        mediaTypeStr = "text/plain" + mediaTypeStr;
+      }
+
+      // 13, 14
+      let mediaType: MediaType;
+      try {
+        mediaType = MediaType.fromString(mediaTypeStr);
+      } catch (exception) {
+        void exception;
+        mediaType = MediaType.fromString("text/plain;charset=US-ASCII");
+      }
+
+      return new Resource(bytes, mediaType.toString());
     }
 
     static fromString(dataUrlStr: string): Resource {
@@ -84,6 +99,15 @@ namespace DataURL {
       }
 
       return Resource.fromURL(dataUrl);
+    }
+
+    static from(dataUrl: URL | string): Resource {
+      if (dataUrl instanceof URL) {
+        return Resource.fromURL(dataUrl);
+      } else if (typeof dataUrl === "string") {
+        return Resource.fromString(dataUrl);
+      }
+      throw new TypeError("dataUrl");
     }
 
     static async fromBlob(blob: Blob): Promise<Resource> {
