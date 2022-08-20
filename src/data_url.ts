@@ -1,0 +1,120 @@
+import { StringUtils } from "https://raw.githubusercontent.com/i-xi-dev/str.es/1.0.5/mod.ts";
+import { HttpUtils } from "https://raw.githubusercontent.com/i-xi-dev/http-utils.es/2.1.0/mod.ts";
+import { Isomorphic } from "https://raw.githubusercontent.com/i-xi-dev/isomorphic.es/2.0.1/mod.ts";
+import { Percent } from "https://raw.githubusercontent.com/i-xi-dev/percent.es/4.0.12/mod.ts";
+import { Base64 } from "https://raw.githubusercontent.com/i-xi-dev/base64.es/3.0.6/mod.ts";
+
+const {
+  ASCII_WHITESPACE,
+} = HttpUtils.Pattern;
+
+namespace DataURL {
+  export class Resource {
+    #type: string;
+    #data: ArrayBuffer;
+    private constructor(data: ArrayBuffer, type: string) {
+      this.#data = data;
+      this.#type = type;
+      Object.freeze(this);
+    }
+
+    get type(): string {
+      return this.#type;
+    }
+
+    get data(): ArrayBuffer {
+      return this.#data;
+    }
+
+    static fromURL(dataUrl: URL): Resource {
+      // 1
+      if (dataUrl.protocol !== "data:") {
+        throw new TypeError(`URL scheme is not "data"`);
+      }
+
+      // 2
+      // https://fetch.spec.whatwg.org/#data-urls に従い、フラグメントは無視する
+      dataUrl.hash = "";
+
+      // 3, 4
+      let bodyStringWork = dataUrl.toString().substring(5);
+
+      // 5, 6, 7
+      if (bodyStringWork.includes(",") !== true) {
+        throw new TypeError("U+002C not found");
+      }
+
+      // 最初に出現した","をメディアタイプとデータの区切りとみなす。
+      // https://fetch.spec.whatwg.org/#data-urls に従い
+      // ・メディアタイプのquotedなパラメーター値に含まれた","とみなせる場合であっても区切りとする
+      // ・クエリはデータの一部とみなす
+      const mediaTypeOriginal = bodyStringWork.split(",")[0] as string;
+      let mediaTypeStr = StringUtils.trim(mediaTypeOriginal, ASCII_WHITESPACE);
+
+      // 8, 9
+      bodyStringWork = bodyStringWork.substring(mediaTypeOriginal.length + 1);
+
+      // 10
+      let bytes = Percent.decode(bodyStringWork);
+
+      // 11
+      const base64Indicator = /;[\u0020]*base64$/i;
+      const base64: boolean = base64Indicator.test(mediaTypeStr);
+      if (base64 === true) {
+        // 11.1
+        bodyStringWork = Isomorphic.decode(bytes);
+
+        // 11.2, 11.3
+        bytes = Base64.decode(bodyStringWork);
+
+        // 11.4, 11.5, 11.6
+        mediaTypeStr = mediaTypeStr.replace(base64Indicator, "");
+      }
+
+      return new Resource(bytes, mediaTypeStr);
+    }
+
+    static fromString(dataUrlStr: string): Resource {
+      let dataUrl: URL;
+      try {
+        dataUrl = new URL(dataUrlStr);
+      } catch (exception) {
+        void exception;
+        throw new TypeError("dataUrlStr does not reperesent URL");
+      }
+
+      return Resource.fromURL(dataUrl);
+    }
+
+    static async fromBlob(blob: Blob): Promise<Resource> {
+      const buffer = await blob.arrayBuffer();
+      return new Resource(buffer, blob.type);
+    }
+
+    //TODO options.base64
+    toURL(): URL {
+      return new URL(this.toString());
+    }
+
+    // FileReaderの仕様に倣い、テキストかどうかに関係なく常時Base64エンコードする仕様
+    //TODO options.base64
+    toString(): string {
+      // let encoding = "";
+      // let dataEncoded: string;
+      // if (base64) {
+      const encoding = ";base64";
+      const dataEncoded = Base64.encode(new Uint8Array(this.#data));
+      // }
+
+      return "data:" + this.#type + encoding + "," + dataEncoded;
+    }
+
+    toBlob(): Blob {
+      return new Blob([this.#data], { type: this.#type });
+    }
+  }
+  Object.freeze(Resource);
+}
+Object.freeze(DataURL);
+
+export { DataURL };
