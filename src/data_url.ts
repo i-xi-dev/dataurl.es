@@ -27,6 +27,28 @@ namespace DataURL {
       return this.#data;
     }
 
+    static create(type: string | MediaType, data: BufferSource): Resource {
+      let mediaType: MediaType;
+      if (type instanceof MediaType) {
+        mediaType = type;
+      } else if (typeof type === "string") {
+        mediaType = MediaType.fromString(type);
+      } else {
+        throw new TypeError("type");
+      }
+
+      let buffer: ArrayBuffer;
+      if (data instanceof ArrayBuffer) {
+        buffer = data;
+      } else if (ArrayBuffer.isView(data)) {
+        buffer = data.buffer;
+      } else {
+        throw new TypeError("buffer");
+      }
+
+      return new Resource(buffer, mediaType.toString());
+    }
+
     static fromURL(dataUrl: URL): Resource {
       // 1
       if (dataUrl.protocol !== "data:") {
@@ -110,16 +132,6 @@ namespace DataURL {
       throw new TypeError("dataUrl");
     }
 
-    //TODO 第2引数をBlobPropertyBag
-    static fromUint8Array(uint8Array: Uint8Array, type: string): Resource {
-      return new Resource(uint8Array.buffer, type);
-    }
-
-    static async fromBlob(blob: Blob): Promise<Resource> {
-      const buffer = await blob.arrayBuffer();
-      return new Resource(buffer, blob.type);
-    }
-
     //TODO options.base64
     toURL(): URL {
       return new URL(this.toString());
@@ -136,10 +148,6 @@ namespace DataURL {
       // }
 
       return "data:" + this.#type + encoding + "," + dataEncoded;
-    }
-
-    toBlob(): Blob {
-      return new Blob([this.#data], { type: this.#type });
     }
   }
   Object.freeze(Resource);

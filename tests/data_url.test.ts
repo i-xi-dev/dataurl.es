@@ -148,10 +148,10 @@ Deno.test("DataURL.Resource.from(string | URL)", () => {
   assertStrictEquals(r7u.type, "text/plain;p1=a;p2=b");
 });
 
-Deno.test("DataURL.Resource.fromUint8Array(Uint8Array, string)", () => {
-  const r1 = DataURL.Resource.fromUint8Array(
-    Uint8Array.of(65, 0, 1, 127),
+Deno.test("DataURL.Resource.create(Uint8Array, string)", () => {
+  const r1 = DataURL.Resource.create(
     "text/plain",
+    Uint8Array.of(65, 0, 1, 127),
   );
   assertStrictEquals(r1.data.byteLength, 4);
   const r1b = new Uint8Array(r1.data);
@@ -162,38 +162,18 @@ Deno.test("DataURL.Resource.fromUint8Array(Uint8Array, string)", () => {
   assertStrictEquals(r1.type, "text/plain");
 });
 
-Deno.test("DataURL.Resource.fromBlob(Blob)", async () => {
-  const b1 = new Blob([Uint8Array.of(65, 0, 1, 127)], { type: "text/plain" });
-  const r1 = await DataURL.Resource.fromBlob(b1);
-  assertStrictEquals(r1.data.byteLength, 4);
-  const r1b = new Uint8Array(r1.data);
-  assertStrictEquals(r1b.at(0), 65);
-  assertStrictEquals(r1b.at(1), 0);
-  assertStrictEquals(r1b.at(2), 1);
-  assertStrictEquals(r1b.at(3), 127);
-  assertStrictEquals(r1.type, "text/plain");
-});
-
-Deno.test("DataURL.Resource.prototype.toString()", async () => {
-  const b1 = new Blob([Uint8Array.of(65, 0, 1, 127)], { type: "text/plain" });
-  const r1 = await DataURL.Resource.fromBlob(b1);
+Deno.test("DataURL.Resource.prototype.toString()", () => {
+  const r1 = DataURL.Resource.create(
+    "text/plain",
+    Uint8Array.of(65, 0, 1, 127),
+  );
   assertStrictEquals(r1.toString(), "data:text/plain;base64,QQABfw==");
 });
 
-Deno.test("DataURL.Resource.prototype.toURL()", async () => {
-  const b1 = new Blob([Uint8Array.of(65, 0, 1, 127)], { type: "text/plain" });
-  const r1 = await DataURL.Resource.fromBlob(b1);
+Deno.test("DataURL.Resource.prototype.toURL()", () => {
+  const r1 = DataURL.Resource.create(
+    "text/plain",
+    Uint8Array.of(65, 0, 1, 127),
+  );
   assertStrictEquals(r1.toURL().toString(), "data:text/plain;base64,QQABfw==");
-});
-
-Deno.test("DataURL.Resource.prototype.toBlob()", async () => {
-  const b1 = new Blob([Uint8Array.of(65, 0, 1, 127)], { type: "text/plain" });
-  const r1 = await DataURL.Resource.fromBlob(b1);
-  const b1c = r1.toBlob();
-  const b1cb = new Uint8Array(await b1c.arrayBuffer());
-  assertStrictEquals(b1cb[0], 65);
-  assertStrictEquals(b1cb[1], 0);
-  assertStrictEquals(b1cb[2], 1);
-  assertStrictEquals(b1cb[3], 127);
-  assertStrictEquals(b1cb.byteLength, 4);
 });
