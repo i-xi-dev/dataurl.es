@@ -3,7 +3,7 @@ import { HttpUtils } from "i-xi-dev/http-utils.es";
 import { Isomorphic } from "i-xi-dev/isomorphic.es";
 import { Percent } from "https://raw.githubusercontent.com/i-xi-dev/percent.es/4.0.12/mod.ts";
 import { Base64 } from "https://raw.githubusercontent.com/i-xi-dev/base64.es/3.0.6/mod.ts";
-import { MediaType } from "https://raw.githubusercontent.com/i-xi-dev/mimetype.es/1.2.0/mod.ts";
+import { MediaType } from "i-xi-dev/mimetype.es";
 
 const {
   ASCII_WHITESPACE,
