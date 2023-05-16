@@ -1,4 +1,4 @@
-import { assertStrictEquals, assertThrows } from "std/testing/asserts";
+import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { DataURL } from "../mod.ts";
 
 Deno.test("DataURL.Resource.fromString(string)", () => {

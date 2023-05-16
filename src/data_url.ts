@@ -1,9 +1,11 @@
-import { StringUtils } from "i-xi-dev/str.es";
-import { HttpUtils } from "i-xi-dev/http-utils.es";
-import { Isomorphic } from "i-xi-dev/isomorphic.es";
-import { Percent } from "i-xi-dev/percent.es";
-import { Base64 } from "i-xi-dev/base64.es";
-import { MediaType } from "i-xi-dev/mimetype.es";
+import {
+  Base64,
+  HttpUtils,
+  Isomorphic,
+  MediaType,
+  Percent,
+  StringUtils,
+} from "../deps.ts";
 
 const {
   ASCII_WHITESPACE,
