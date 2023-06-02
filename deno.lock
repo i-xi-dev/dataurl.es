@@ -1,10 +1,10 @@
 {
   "version": "2",
   "remote": {
-    "https://deno.land/std@0.187.0/fmt/colors.ts": "d67e3cd9f472535241a8e410d33423980bec45047e343577554d3356e1f0ef4e",
-    "https://deno.land/std@0.187.0/testing/_diff.ts": "1a3c044aedf77647d6cac86b798c6417603361b66b54c53331b312caeb447aea",
-    "https://deno.land/std@0.187.0/testing/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",
-    "https://deno.land/std@0.187.0/testing/asserts.ts": "e16d98b4d73ffc4ed498d717307a12500ae4f2cbe668f1a215632d19fcffc22f",
+    "https://deno.land/std@0.190.0/fmt/colors.ts": "d67e3cd9f472535241a8e410d33423980bec45047e343577554d3356e1f0ef4e",
+    "https://deno.land/std@0.190.0/testing/_diff.ts": "1a3c044aedf77647d6cac86b798c6417603361b66b54c53331b312caeb447aea",
+    "https://deno.land/std@0.190.0/testing/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",
+    "https://deno.land/std@0.190.0/testing/asserts.ts": "e16d98b4d73ffc4ed498d717307a12500ae4f2cbe668f1a215632d19fcffc22f",
     "https://raw.githubusercontent.com/i-xi-dev/base64.es/4.0.1/deps.ts": "9e1e2c77971750b2afa9eb66fc52caae5099471df492eea5f548f426e92de5e2",
     "https://raw.githubusercontent.com/i-xi-dev/base64.es/4.0.1/mod.ts": "7ca7438a37a23da4afc8a7b3efe887fd126c8bc2313c11fb4189f76e97158f6a",
     "https://raw.githubusercontent.com/i-xi-dev/base64.es/4.0.1/src/base64.ts": "4fd3f27edf9d10b3e43d5e1042381874d009b0c0e6c7d52cc3959732f0733b9f",
