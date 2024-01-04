@@ -1,17 +1,10 @@
-import {
-  Base64,
-  HttpUtils,
-  Isomorphic,
-  MediaType,
-  Percent,
-  StringUtils,
-} from "../deps.ts";
+import { Base64, HttpUtils, MediaType, Percent, StringEx } from "../deps.ts";
 
 const {
   ASCII_WHITESPACE,
 } = HttpUtils.Pattern;
 
-namespace DataURL {
+export namespace DataURL {
   export class Resource {
     #type: string;
     #data: ArrayBuffer;
@@ -74,7 +67,7 @@ namespace DataURL {
       // ・メディアタイプのquotedなパラメーター値に含まれた","とみなせる場合であっても区切りとする
       // ・クエリはデータの一部とみなす
       const mediaTypeOriginal = bodyStringWork.split(",")[0] as string;
-      let mediaTypeStr = StringUtils.trim(mediaTypeOriginal, ASCII_WHITESPACE);
+      let mediaTypeStr = StringEx.trim(mediaTypeOriginal, ASCII_WHITESPACE);
 
       // 8, 9
       bodyStringWork = bodyStringWork.substring(mediaTypeOriginal.length + 1);
@@ -87,7 +80,7 @@ namespace DataURL {
       const base64: boolean = base64Indicator.test(mediaTypeStr);
       if (base64 === true) {
         // 11.1
-        bodyStringWork = Isomorphic.decode(bytes);
+        bodyStringWork = StringEx.Isomorphic.decode(bytes);
 
         // 11.2, 11.3
         bytes = Base64.decode(bodyStringWork);
@@ -154,6 +147,3 @@ namespace DataURL {
   }
   Object.freeze(Resource);
 }
-Object.freeze(DataURL);
-
-export { DataURL };
