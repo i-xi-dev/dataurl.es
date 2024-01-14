@@ -1,4 +1,11 @@
-import { Base64, HttpUtils, MediaType, Percent, StringEx } from "../deps.ts";
+import {
+  Base64,
+  HttpUtils,
+  Isomorphic,
+  MediaType,
+  Percent,
+  StringEx,
+} from "../deps.ts";
 
 const {
   ASCII_WHITESPACE,
@@ -80,7 +87,7 @@ export namespace DataURL {
       const base64: boolean = base64Indicator.test(mediaTypeStr);
       if (base64 === true) {
         // 11.1
-        bodyStringWork = StringEx.Isomorphic.decode(bytes);
+        bodyStringWork = Isomorphic.decode(bytes);
 
         // 11.2, 11.3
         bytes = Base64.decode(bodyStringWork);
